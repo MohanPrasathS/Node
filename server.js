@@ -21,21 +21,21 @@ app.listen(port, () => {
 // const dbDb = process.env.PG_DB_DB;
 // const dbPasswd = process.env.PG_DB_PASSWD;
 
-// const pool = new pg_1.Pool({
-//    host: 'ec2-54-159-107-189.compute-1.amazonaws.com',
-//    user: 'otuwstlmetkuzh',
-//    database: 'df4kau9c7sqlko',
-//    password: '2b3c00ad4ff11e72154bf63d4310dcacbcf657caeeefdbdac857939fcf0b6637',
-//    port: 5432,
-// });
-
 const pool = new pg_1.Pool({
-    host: 'localhost',
-    user: 'postgres',
-    database: 'test',
-    password: 'password',
-    port: 5432,
+   host: 'ec2-54-166-242-77.compute-1.amazonaws.com',
+   user: 'rguuwukksjuzpo',
+   database: 'ddo2sf8sfojipk',
+   password: '09c07bd9e88380942b3725ad6afc0f1ca9d558b066a341c57a91b3d4d78ed085',
+   port: 5432,
 });
+
+// const pool = new pg_1.Pool({
+//     host: 'localhost',
+//     user: 'postgres',
+//     database: 'test',
+//     password: 'password',
+//     port: 5432,
+// });
 
 // const pool = new pg_1.Pool({
 //     host: dbHost,
