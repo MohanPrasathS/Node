@@ -1,0 +1,12 @@
+
+.vertical-line {
+  border-right: 2px solid black;
+  padding-right: 10px;
+}
+
+.col-second {
+  margin-left: 15px;
+  padding: 10px;
+  width: 550px;
+
+}
