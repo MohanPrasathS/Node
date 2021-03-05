@@ -96,6 +96,7 @@ app.post('/index',async (req,res) => {
             }
         })
         .catch((err) => {
+          console.log(err);
             console.log("Invalid Username");
         });
         if(signin){
