@@ -22,9 +22,10 @@ app.listen(port, () => {
 // const dbPasswd = process.env.PG_DB_PASSWD;
 
 const conn = process.env.DATABASE_URL;
-
+console.log(conn);
 const pool = new Pool({
-  conn,
+  connectionString: 'postgres://rguuwukksjuzpo:09c07bd9e88380942b3725ad6afc0f1ca9d558b066a341c57a91b3d4d78ed085@ec2-54-166-242-77.compute-1.amazonaws.com:5432/ddo2sf8sfojipk',
+  ssl: { rejectUnauthorized: false }
 });
 
 // const pool = new Pool({
