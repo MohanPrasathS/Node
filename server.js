@@ -22,7 +22,7 @@ app.listen(port, () => {
 // const dbPasswd = process.env.PG_DB_PASSWD;
 
 const conn = process.env.DATABASE_URL;
-
+console.log(conn);
 const pool = new Pool({
   conn,
 });
