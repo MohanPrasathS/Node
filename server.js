@@ -1,7 +1,7 @@
 const port = process.env.PORT || 3000;
 const express = require('express');
 const app = express();
-const pg_1 = require('pg');
+const {Pool } = require('pg');
 const bodyParser = require('body-parser');
 const alert = require('alert');
 const path = require('path');
@@ -21,13 +21,19 @@ app.listen(port, () => {
 // const dbDb = process.env.PG_DB_DB;
 // const dbPasswd = process.env.PG_DB_PASSWD;
 
-const pool = new pg_1.Pool({
-   host: 'ec2-54-166-242-77.compute-1.amazonaws.com',
-   user: 'rguuwukksjuzpo',
-   database: 'ddo2sf8sfojipk',
-   password: '09c07bd9e88380942b3725ad6afc0f1ca9d558b066a341c57a91b3d4d78ed085',
-   port: 5432,
+const conn = DATABASE_URL;
+
+const pool = new Pool({
+  conn,
 });
+
+// const pool = new Pool({
+//    host: 'ec2-54-166-242-77.compute-1.amazonaws.com',
+//    user: 'rguuwukksjuzpo',
+//    database: 'ddo2sf8sfojipk',
+//    password: '09c07bd9e88380942b3725ad6afc0f1ca9d558b066a341c57a91b3d4d78ed085',
+//    port: 5432,
+// });
 
 // const pool = new pg_1.Pool({
 //     host: 'localhost',
