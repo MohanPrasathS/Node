@@ -15,42 +15,21 @@ app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
 
-// const dbHost = process.env.PG_DB_HOST;
-// const dbPort = Number(process.env.PG_DB_PORT);
-// const dbUser = process.env.PG_DB_USER;
-// const dbDb = process.env.PG_DB_DB;
-// const dbPasswd = process.env.PG_DB_PASSWD;
 
-const conn = process.env.DATABASE_URL;
-console.log(conn);
-const pool = new Pool({
-  connectionString: 'postgres://rguuwukksjuzpo:09c07bd9e88380942b3725ad6afc0f1ca9d558b066a341c57a91b3d4d78ed085@ec2-54-166-242-77.compute-1.amazonaws.com:5432/ddo2sf8sfojipk',
-  ssl: { rejectUnauthorized: false }
-});
-
+// const conn = process.env.DATABASE_URL;
+// console.log(conn);
 // const pool = new Pool({
-//    host: 'ec2-54-166-242-77.compute-1.amazonaws.com',
-//    user: 'rguuwukksjuzpo',
-//    database: 'ddo2sf8sfojipk',
-//    password: '09c07bd9e88380942b3725ad6afc0f1ca9d558b066a341c57a91b3d4d78ed085',
-//    port: 5432,
+//   connectionString: conn,
+//   ssl: { rejectUnauthorized: false }
 // });
 
-// const pool = new pg_1.Pool({
-//     host: 'localhost',
-//     user: 'postgres',
-//     database: 'test',
-//     password: 'password',
-//     port: 5432,
-// });
-
-// const pool = new pg_1.Pool({
-//     host: dbHost,
-//     user: dbUser,
-//     database: dbDb,
-//     password: dbPasswd,
-//     port: dbPort,
-// });
+const pool = new Pool({
+    host: 'localhost',
+    user: 'postgres',
+    database: 'test',
+    password: 'password',
+    port: 5432,
+});
 
 app.use(express.static("views/"));
 
@@ -59,6 +38,66 @@ app.use(express.static("views/"));
 //    app.use(express.static('views/'));
 //    // res.sendFile('dist/index.html', {root:__dirname});
 // });
+
+app.post('/signup', (req, res) => {
+      console.log('got signup page request');
+      res.sendFile('views/signup.html', {root:__dirname});
+});
+
+app.post('/', (req, res) => {
+      console.log('New User Registration request received');
+      console.log(req.body);
+      var otp = generateOTP();
+      console.log(otp);
+      res.sendFile('views/index.html', {root:__dirname});
+});
+
+app.post('/verifyEmail', (req,res) => {
+    console.log(req.body);
+    // res.sendFile('views/signup.html', {root:__dirname});
+    var otp = generateOTP();
+    console.log(otp);
+    var {name, email, phone, password} = req.body;
+    const insertUser = 'INSERT INTO signin values($1,$2,$3,$4,$5,$6);';
+    pool.query(insertUser,[email, name, phone, password, otp, 'false']);
+    SendOTP(req.body.email, otp);
+    res.write('Otp Sent to the given mailId');
+    res.end();
+});
+
+app.post('/verifyOTP', async (req,res) => {
+    console.log(req.body);
+    const verifyOTP = 'select username, otp from signin WHERE username = $1;';
+    var verify = false;
+    await pool.query(verifyOTP, [req.body.email])
+      .then((result) => {
+        if (result.rowCount) {
+          console.log(result.rows[0].otp+ "  "+req.body.otp);
+          if (result.rows[0].otp == req.body.otp) {
+            pool.query('update signin set verified = true where username = $1', [req.body.email]);
+            verify = true;
+          }
+        }
+      })
+      .catch ((err) => {
+        console.log(err);
+      });
+      if (verify) {
+        res.setHeader('Content-Type', 'text/plain');
+        res.write("Otp verification Success");
+        res.end();
+      } else {
+        res.setHeader('Content-Type', 'text/plain');
+        res.write("Please Enter Correct OTP.");
+        res.end();
+      }
+
+});
+
+app.get('/privacy', (req, res) => {
+      console.log('privacy page request');
+      res.sendFile('views/privacy.html', {root:__dirname});
+});
 
 app.get('/admission', (req, res) => {
       console.log('got admission page request');
@@ -96,18 +135,16 @@ app.post('/index',async (req,res) => {
             if(res.rowCount){
                 var user = res.rows[0].username;
                 var pass = res.rows[0].password;
+                var verified = res.rows[0].verified;
                 console.log(user +" "+ pass);
-                if(username === user && password === pass){
+                if(username === user && password === pass && verified == true){
                     signin = true;
                 }
             }
         })
         .catch((err) => {
-            console.log(err);
-            console.log("Invalid Username");
-            if (username === 'admin@siet.ac.in' && password === 'admin123') {
-              signin = true;
-            }
+          console.log("Error in Querying");
+          console.log(err);
         });
         if(signin){
             res.sendFile(path.resolve('views/dashboard.html'));
@@ -219,6 +256,24 @@ app.post('/insertAdmission', async (req, res) => {
   }
 });
 
+app.post('/insertAdmissionDetails', (req, res) => {
+  console.log(req.body);
+  const insertAdmissionDetails = 'INSERT INTO admissiondetails values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22);';
+  // const { student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name, email, student mobile number, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2, course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios } = req.body;
+  // const student_first_name = req.body.student_first_name;
+  // const student_last_name = req.body.student_last_name;
+  // const father_first_name = req.body.father_first_name;
+  // const father_last_name = req.body.father_last_name;
+  // const mother_first_name = req.body.mother_first_name;
+  // const mother_last_name = req.body.mother_last_name;
+  const {student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name} = req.body;
+  const {email, student_mobile_number, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2} = req.body;
+  const {course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios} = req.body;
+  pool.query(insertAdmissionDetails,[student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name, email, student_mobile_number, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2, course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios])
+  res.sendFile(path.resolve('views/dashboard.html'));
+  // res.sendStatus(200);
+});
+
 app.post('/insertStudent', async (req, res) => {
   console.log('Inside student insertion');
   const {rollNo, status, at_time, on_date} = req.body;
@@ -317,28 +372,39 @@ app.post('/insertVisitor', async (req, res) => {
 //         console.log(e);
 //     }
 // });
-// var j = schedule.scheduleJob({hour:11, minute : 20}, () => {
-//     const transporter = nodemailer.createTransport({
-//         service : 'gmail',
-//         auth : {
-//             user : 'mohanprasath1999@gmail.com',
-//             pass : 'rrqemvaysrwocjko'
-//         }
-//     });
-//
-//     var mailOptions = {
-//         from : 'mohanprasaths2021@srishakthi.ac.in',
-//         to : 'mohanprasaths2021@srishakthi.ac.in, dheenasenanm2021@srishakthi.ac.in, hariprasanthr2021@srishakthi.ac.in',
-//         subject : 'Mail from node JS',
-//         text : 'This is to verify that the nodeMailer is working fine!. Please do not reply to this mail'
-//     };
-//
-//     transporter.sendMail(mailOptions, function(err, info){
-//         if(err){
-//             console.log("Error occured");
-//             console.log(err);
-//         } else {
-//             console.log("Email Sent! " + info.response);
-//         }
-//     });
-// });
+
+function generateOTP() {
+  var digits = '0123456789';
+    let OTP = '';
+    for (let i = 0; i < 4; i++ ) {
+        OTP += digits[Math.floor(Math.random() * 10)];
+    }
+    return OTP;
+}
+
+function SendOTP(email, otp) {
+
+    const transporter = nodemailer.createTransport({
+        service : 'gmail',
+        auth : {
+            user : 'mohanprasath1999@gmail.com',
+            pass : 'rrqemvaysrwocjko'
+        }
+    });
+
+    var mailOptions = {
+        from : 'mohanprasaths2021@srishakthi.ac.in',
+        to : email,
+        subject : 'OTP Verification',
+        text : 'OTP for verification of your email is ' + otp + '\nThanks and Regards \n   SIET \nThis is an auto generated mail. Please dont reply to this mail.'
+    };
+
+    transporter.sendMail(mailOptions, function(err, info){
+        if(err){
+            console.log("Error occured");
+            console.log(err);
+        } else {
+            console.log("Email Sent! " + info.response);
+        }
+    });
+}

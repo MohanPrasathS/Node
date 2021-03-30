@@ -1,39 +1,48 @@
 <br>
 <h3 style="text-align: center;"><b>Admission Enquiry Form</b></h3><br>
-<form action="">
+<form action="/insertAdmissionDetails" method="post">
 <table>
   <tr>
       <td>
         <div class="vertical-line">
-            <label for=""><b>Student Name</b></label>
+          <div class="row">
+          <label for="Student Name"><b>Student Name</b></label>
+          <div class="requires">*</div>
+          </div>
             <div class="row row-form">
                 <div class="col">
-                  <input type="text" class="form-control" placeholder="First name">
+                  <input type="text" name="student_first_name" class="form-control" placeholder="First name" required>
                 </div>
                 <div class="col">
-                  <input type="text" class="form-control" placeholder="Last name">
+                  <input type="text" name="student_last_name" class="form-control" placeholder="Last name" required>
                 </div>
             </div>
             <br>
 
+            <div class="row">
             <label for=""><b>Father Name</b></label>
+            <div class="requires">*</div>
+            </div>
             <div class="row row-form">
                 <div class="col">
-                  <input type="text" class="form-control" placeholder="First name">
+                  <input type="text" name="father_first_name" class="form-control" placeholder="First name" required>
                 </div>
                 <div class="col">
-                  <input type="text" class="form-control" placeholder="Last name">
+                  <input type="text" name="father_last_name" class="form-control" placeholder="Last name">
                 </div>
             </div>
             <br>
 
+            <div class="row">
             <label for=""><b>Mother Name</b></label>
+            <div class="requires">*</div>
+            </div>
             <div class="row row-form">
                 <div class="col">
-                  <input type="text" class="form-control" placeholder="First name">
+                  <input type="text" name="mother_first_name" class="form-control" placeholder="First name" required>
                 </div>
                 <div class="col">
-                  <input type="text" class="form-control" placeholder="Last name">
+                  <input type="text" name="mother_last_name" class="form-control" placeholder="Last name">
                 </div>
             </div>
             <br>
@@ -41,30 +50,51 @@
             <label for=""><b>Student Details :</b></label>
               <div class="form-row row-form">
                 <div class="form-group col-md-6">
-                  <label for="inputEmail4">Email</label>
-                  <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                  <div class="row">
+                  <label for="">Email</label>
+                  <div class="requires">*</div>
+                  </div>
+                  <input type="email" name="email"class="form-control" id="inputEmail4" placeholder="Email" required>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="inputPassword4">Mobile No</label>
-                  <input type="text" class="form-control" id="inputMobile4" placeholder="Mobile Number">
+                  <div class="row">
+                  <label for="">Mobile No</label>
+                  <div class="requires">*</div>
+                  </div>
+                  <input type="text" name="student_mobile_number" class="form-control" id="inputMobile4" placeholder="Mobile Number" required>
+                </div>
+              </div>
+              <div class="form-group form-row">
+                <div class="form-group col-md-3">
+                  <div class="row">
+                  <label for="">DOB</label>
+                  <div class="requires">*</div>
+                  </div>
+                <input type="date" id="DOB" class="form-control" name="dob" required>
+                </div>
+                <div class="form-group col-md-9">
+                <label for="inputAddress">Address</label>
+                <input type="text" name="address" class="form-control" id="inputAddress" placeholder="Address" width="100px">
                 </div>
               </div>
               <!-- <div class="form-group row-form">
-                <label for="inputAddress">Address</label>
-                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-              </div>
-              <div class="form-group row-form">
                 <label for="inputAddress2">Address 2</label>
                 <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
               </div> -->
               <div class="form-row row-form">
                   <div class="form-group col-md-6 ">
-                    <label for="inputCity">City</label>
-                    <input type="text" class="form-control" id="inputCity">
+                    <div class="row">
+                    <label for="">City</label>
+                    <div class="requires">*</div>
+                    </div>
+                    <input type="text" name="city" class="form-control" id="inputCity" required>
                   </div>
                   <div class="form-group col-md-4 ">
-                    <label for="inputState">State</label>
-                    <select id="inputState" class="form-control">
+                    <div class="row">
+                    <label for="">State</label>
+                    <div class="requires">*</div>
+                    </div>
+                    <select id="inputState" name="state" class="form-control" required>
                       <option selected>Select</option>
                       <option>Tamil Nadu</option>
                       <option>Kerala</option>
@@ -73,20 +103,23 @@
                       <option>NRI</option>
                     </select>
                   </div>
-                  <div class="form-group col-md-2 required">
+                  <div class="form-group col-md-2">
                     <label for="inputZip">Zip</label>
-                    <input type="text" class="form-control" id="inputZip">
+                    <input type="text" name="zip" class="form-control" id="inputZip" required="required">
                   </div>
             </div>
             <br>
+            <div class="row">
             <label for=""><b>Parent Mobile </b></label><br>
+            <div class="requires">*</div>
+            </div>
             <!-- <label for="">Mobile No</label> -->
             <div class="row row-form">
                 <div class="col">
-                  <input type="text" class="form-control required" placeholder="Mobile Number 1">
+                  <input type="text" name="parent_mobile_number_1" class="form-control" required="required" placeholder="Mobile Number 1">
                 </div>
                 <div class="col">
-                  <input type="text" class="form-control" placeholder="Mobile Number 2">
+                  <input type="text" name="parent_mobile_number_2" class="form-control" placeholder="Mobile Number 2">
                 </div>
             </div>
             <br>
@@ -99,8 +132,33 @@
       <div class="col-second">
           <label for=""><b>Course you would like to apply</b></label>
           <div class="form-group">
-            <!-- <label for="inputState">Course</label> -->
-            <select id="inputState" class="form-control">
+            <div class="row">
+              <label for="inputState">Preferred Course 1</label><br>
+              <div class="requires">*</div>
+            </div>
+            <select id="inputState" name="course_1" class="form-control" required>
+              <option selected>Course</option>
+              <option>B.E - Agriculture Engineering</option>
+              <option>B.E - Biomedical Engineering</option>
+              <option>B.Tech - Biotechnology</option>
+              <option>B.E - Civil Engineering</option>
+              <option>B.E - Computer Science and Engineering</option>
+              <option>B.E - Electrical and Electronics Engineering</option>
+              <option>B.E - Electronics and Communication Engineering</option>
+              <option>B.Tech - Food Technology</option>
+              <option>B.Tech - Information Technology</option>
+              <option>B.E - Mechanical Engineering</option>
+              <option>M.E - Computer Science and Engineering</option>
+              <option>M.E - VLSI Design</option>
+              <option>M.E - CAD/CAM</option>
+              <option>M.E - Embedded System Technologies</option>
+              <option>M.E - Structural Engineering</option>
+            </select>
+            <div class="row">
+              <label for="inputState">Preferred Course 2</label>
+              <div class="requires">*</div>
+            </div>
+            <select id="inputState" name="course_2" class="form-control">
               <option selected>Course</option>
               <option>B.E - Agriculture Engineering</option>
               <option>B.E - Biomedical Engineering</option>
@@ -121,27 +179,46 @@
           </div>
           <br>
           <label for=""><b>Academic Details</b></label><br>
-          <label for="">Which school did you studied?</label><br>
+          <div class="row">
+              <label for="">Which school did you studied?</label>
+              <div class="requires">*</div>
+          </div>
+
           <div class="row">
               <div class="col">
-                <input type="text" class="form-control" placeholder="Mention Your Higher Secondary School">
+                <input type="text" name="school" class="form-control" placeholder="Mention Your Higher Secondary School" required>
               </div>
           </div>
           <br>
-
-          <label for="">Expected Marks</label>
+          <div class="row">
+            <label for="">Marks Obtained in X</label>
+            <div class="requires">*</div>
+          </div>
           <div class="row">
               <div class="col">
-                <input type="text" class="form-control" placeholder="Mention Your Higher Secondary School">
+                <input type="text" name="x_marks" class="form-control" placeholder="Enter X mark" required>
               </div>
 
           </div>
           <br>
-
-          <label for="">Expected CutOff</label>
+          <div class="row">
+            <label for="">Marks Obtained in XII</label>
+            <div class="requires">*</div>
+          </div>
           <div class="row">
               <div class="col">
-                <input type="text" class="form-control" placeholder="Mention Your Higher Secondary School">
+                <input type="text" name="xii_marks" class="form-control" placeholder="Expected marks in XII" required>
+              </div>
+
+          </div>
+          <br>
+          <div class="row">
+            <label for="">Expected CutOff</label>
+            <div class="requires">*</div>
+          </div>
+          <div class="row">
+              <div class="col">
+                <input type="text" name="cutoff_marks" class="form-control" placeholder="Expected Cutoff" required>
               </div>
 
           </div>
@@ -149,13 +226,13 @@
 
           <label for="">Preferring hostel/Day Scholor</label>
           <div class="form-check">
-              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="Day Scholor" checked>
               <label class="form-check-label" for="exampleRadios1">
                 Day Scholor
               </label>
           </div>
           <div class="form-check">
-              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="Hosteller">
               <label class="form-check-label" for="exampleRadios2">
                 Hosteller
               </label>

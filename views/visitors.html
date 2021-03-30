@@ -1,6 +1,12 @@
-<h1 class="mt-4">Visitors</h1>
-<button class="btn btn-primary" type="button" name="button" onclick="selectVisitor()">Refresh</button>
+<h1 style = "float: left;"class="mt-1">Visitors</h1>
+<p style = "float: right; margin-top:20px;padding-right:100px;" class="mt-4"><i>Select date to filter</i></p>
+<br><br><br>
 <button class="btn btn-primary" type="button" name="button" onclick="generatePDF()"><i class="fas fa-print"></i>Print</button>
+<form style = "float: right;" class="" action="javascript:void(0)" method="post">
+  <button style = "float: right;" class="btn btn-primary" type="submit" name="button" onclick="selectVisitor()">Refresh</button>
+  <input style = "float: right; margin-right: 20px;" type="date" name="Date" value="" required>
+</form>
+<br>
 <br>
 <div id="content">
 

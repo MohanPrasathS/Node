@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="css/signup.css">
+</head>
+<body>
+
+    <div class="main">
+
+        <!-- Sign up form -->
+        <section class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form">
+                        <h2 class="form-title">Sign up</h2>
+                        <form method="POST" class="register-form" id="register-form" action="/">
+                          <!-- <form method="POST" action="/verifyEmail"> -->
+                          <div id="name_error"></div>
+                              <div class="form-group">
+                                  <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                  <input type="text" name="name" id="name" oninput="validateInput()" placeholder="Your Name" required/>
+                              </div>
+                              <div id="email_error"></div>
+                              <div class="form-group">
+                                  <label for="email"><i class="zmdi zmdi-email"></i></label>
+                                  <input type="email" name="email" id="email" oninput="validateInput()" placeholder="Your Email" required/>
+                              </div>
+                              <div id="phone_error"></div>
+                              <div class="form-group">
+                                  <label for="phone"><i class="zmdi zmdi-phone material-icons-name"></i></label>
+                                  <input type="number" name="phone" id="phone" oninput="validateInput()" placeholder="Your Mobile Number" required/>
+                              </div>
+                              <div id="password_error"></div>
+                              <div class="form-group">
+                                  <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+                                  <input type="password" name="pass" id="pass" oninput="validateInput()" placeholder="Password" required/>
+                              </div>
+                              <div class="form-group">
+                                  <div id="re_password_error"></div>
+                                  <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
+                                  <input type="password" name="re_pass" id="re_pass" oninput="validateInput()" placeholder="Repeat your password" required/>
+                              </div>
+                              <button class="btn btn-primary" id="verifyEmail" onclick="verifyEmailId()" disabled = "true" type="button">verify Email</button>
+                          <!-- </form> -->
+                          <br><br>
+                          <div id="otp_sent_message">
+
+                          </div>
+                          <br>
+                          <div id="otp_status_message">
+
+                          </div>
+                            <div class="form-group">
+                                <label for="OTP"><i class="zmdi zmdi-dialpad material-icons-name"></i></label>
+                                <input type="number" name="OTP" id="OTPValue" oninput="validateOTP()" placeholder="Enter OTP" required/>
+                            </div>
+                            <button class="btn btn-primary" id="OTP" onclick="verifyOTP()" disabled="true" type="button">verify OTP</button>
+                            <br><br>
+                            <div id="otp_status">
+
+                            </div>
+                            <br><br>
+                            <!-- <div class="form-group">
+                                <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
+                                <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
+                            </div> -->
+                            <div id="Success-login"></div>
+                            <!-- <div class="form-group form-button">
+                                <input type="submit" name="signup" id="signup" class="form-submit" value="Register"/>
+                            </div> -->
+                        </form>
+                    </div>
+                    <div class="signup-image">
+                        <figure><img src="images/signup-image.jpg" alt="sing up image"></figure>
+                        <!-- <a href="#" class="signup-image-link">I am already member</a> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- JS -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/main.js"></script>
+    <script type="text/javascript">
+
+      function verifyEmailId() {
+        console.log('INside verifyEmail');
+        const data = {
+          email : document.getElementById('email').value,
+          name : document.getElementById('name').value,
+          phone : document.getElementById('phone').value,
+          password : document.getElementById('pass').value
+        }
+        console.log(data);
+        document.getElementById('otp_sent_message').innerHTML = '<p>Success</p>';
+        fetch('./verifyEmail',{
+            method: 'POST', // or 'PUT'
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          }
+          ).then(function(response) {
+            response.text().then(function(data) {
+                   document.getElementById('otp_sent_message').innerHTML =(data);
+            });
+        });
+      }
+
+      function verifyOTP() {
+        const data = {
+          email : document.getElementById('email').value,
+          otp : document.getElementById('OTPValue').value,
+        }
+        console.log(data);
+        fetch('./verifyOTP', {
+            method: 'POST', // or 'PUT'
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          }).then(function(response) {
+            response.text().then(function(data) {
+              console.log(data);
+                   document.getElementById('otp_status').innerHTML =(data);
+                   if (data == 'Otp verification Success') {
+                     document.getElementById('Success-login').innerHTML = '<button class="btn btn-primary" type="submit">Login Now</button>';
+                   }
+            });
+        });
+      }
+
+      function validateOTP() {
+          var otp = document.getElementById('OTPValue').value;
+          var bool = (document.getElementById('verifyEmail').disabled != true)
+          if ((document.getElementById('verifyEmail').disabled != true)) {
+            console.log('Enabled');
+          }
+          else {
+            console.log('Disabled');
+          }
+          console.log((document.getElementById('OTPValue').value).length);
+          if((document.getElementById('OTPValue').value).length == 4 && (document.getElementById('verifyEmail').disabled != true)){
+            document.getElementById('OTP').disabled = false;
+            document.getElementById('otp_status_message').innerHTML = '';
+          }
+          else {
+            document.getElementById('OTP').disabled = true;
+            document.getElementById('otp_status_message').innerHTML = '<p style="color: red;">Enter OTP</p>';
+          }
+      }
+
+      function ValidateEmail(inputText) {
+        var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if(inputText.match(mailformat)) {
+          if (inputText.includes("siet.ac.in")) {
+            return true;
+          }
+
+        } else {
+          return false;
+        }
+      }
+
+      function validateInput() {
+        var email = document.getElementById('email').value;
+        var username = document.getElementById('name').value;
+        var phone = document.getElementById('phone').value;
+        var password = document.getElementById('pass').value;
+        var re_password = document.getElementById('re_pass').value;
+        console.log('validateInput');
+        var flag = true;
+
+        if ((username).length < 3) {
+            document.getElementById('name_error').innerHTML = '<p style="color: red;">Name is too Short</p>';
+            flag = false;
+            return;
+        } else {
+            document.getElementById('name_error').innerHTML = '';
+        }
+        if (ValidateEmail(email)){
+          document.getElementById('email_error').innerHTML = '';
+        } else {
+          document.getElementById('email_error').innerHTML = '<p style="color: red;">Enter valid Email</p>';
+          flag = false;
+          return;
+        }
+        if ((phone).length < 10) {
+            document.getElementById('phone_error').innerHTML = '<p style="color: red;">Phone Number is too Short</p>';
+            flag = false;
+            return;
+        } else if ((phone.length > 10)) {
+            document.getElementById('phone_error').innerHTML = '<p style="color: red;">Phone Number is too long</p>';
+            flag = false;
+            return;
+        } else {
+            document.getElementById('phone_error').innerHTML = '';
+        }
+
+        if ((password).length < 5) {
+            document.getElementById('password_error').innerHTML = '<p style="color: red;">Password should be atleast 6 characters</p>';
+            flag = false;
+            return;
+        } else {
+            document.getElementById('password_error').innerHTML = '';
+        }
+
+        if (password != re_password) {
+              document.getElementById('re_password_error').innerHTML = '<p style="color: red;">Password should Match</p>';
+              flag = false;
+              return;
+        } else {
+            document.getElementById('re_password_error').innerHTML = '';
+        }
+
+        if (flag) {
+            document.getElementById('verifyEmail').disabled = false;
+        }else {
+            document.getElementById('verifyEmail').disabled = true;
+        }
+      }
+    </script>
+</body>
+</html>
