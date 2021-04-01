@@ -307,7 +307,7 @@ app.post('/insertAdmission', async (req, res) => {
 
 app.post('/insertAdmissionDetails', async (req, res) => {
   console.log(req.body);
-  // const checkAdmission = 'select * from admissiondetails where stu_mobile = $1;';
+  const checkAdmission = 'select * from admissiondetails where stu_mobile = $1;';
   const result = await pool.query(checkAdmission,[req.body.phone_no]);
   if (result.rowCount) {
     const update_admission_details = 'update admissiondetails set student_fn = $1, student_ln = $2, father_fn = $3, father_ln = $4, mother_fn = $5, mother_ln = $6, email = $7, dob = $8, address = $9, city = $10, state = $11, zip = $12, parent_mob_1 = $13, parent_mob_2 = $14, course_1 = $15, course_2 = $16, school = $17, x_marks = $18, xii_marks = $19, cut_off = $20, Hostel_DayScholor = $21;'
