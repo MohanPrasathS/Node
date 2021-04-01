@@ -177,3 +177,77 @@ function selectBunker(){
         });
     });
 }
+
+function validatePhone() {
+  console.log('inside isValid_phoneNo');
+  var phone = document.getElementById('admission_phone').value;
+  console.log(phone);
+  if((phone).length == 10){
+    select_admission_id();
+    // document.getElementById('phone_button').disabled = false;
+  }
+}
+
+function select_admission_id() {
+  const data = {
+    phone_no : document.getElementById('admission_phone').value,
+  }
+  console.log(data);
+  fetch('./enquiry_number', {
+      method: 'POST', // or 'PUT'
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(function(response) {
+      response.json().then(function(data) {
+        console.log(data);
+        console.log(data[0].student_first_name);
+        if (data[0].student_first_name !== '') {
+             document.getElementById('admission_no').value =(data[0].admission_no);
+             document.getElementById('student_first_name').value =(data[0].student_fn);
+             document.getElementById('student_last_name').value =(data[0].student_ln);
+             document.getElementById('father_first_name').value =(data[0].father_fn);
+             document.getElementById('father_last_name').value =(data[0].father_ln);
+             document.getElementById('mother_first_name').value =(data[0].mother_fn);
+             document.getElementById('mother_last_name').value =(data[0].mother_ln);
+             document.getElementById('email').value =(data[0].email);
+             document.getElementById('DOB').value =(data[0].dob);
+             document.getElementById('address').value =(data[0].address);
+             document.getElementById('city').value =(data[0].city);
+             document.getElementById('state').value =(data[0].state);
+             document.getElementById('zip').value =(data[0].zip);
+             document.getElementById('parent_mobile_number_1').value =(data[0].parent_mob_1);
+             document.getElementById('parent_mobile_number_2').value =(data[0].parent_mob_2);
+             document.getElementById('course_1').value =(data[0].course_1);
+             document.getElementById('course_2').value =(data[0].course_2);
+             document.getElementById('school').value =(data[0].school);
+             document.getElementById('x_marks').value =(data[0].x_marks);
+             document.getElementById('xii_marks').value =(data[0].xii_marks);
+             document.getElementById('cutoff_marks').value =(data[0].cut_off);
+        } else {
+          document.getElementById('student_first_name').value ='';
+          document.getElementById('student_last_name').value ='';
+          document.getElementById('father_first_name').value ='';
+          document.getElementById('father_last_name').value ='';
+          document.getElementById('mother_first_name').value ='';
+          document.getElementById('mother_last_name').value ='';
+          document.getElementById('email').value ='';
+          document.getElementById('DOB').value ='';
+          document.getElementById('address').value ='';
+          document.getElementById('city').value ='';
+          document.getElementById('state').value ='';
+          document.getElementById('zip').value ='';
+          document.getElementById('parent_mobile_number_1').value ='';
+          document.getElementById('parent_mobile_number_2').value ='';
+          document.getElementById('course_1').value ='';
+          document.getElementById('course_2').value ='';
+          document.getElementById('school').value ='';
+          document.getElementById('x_marks').value ='';
+          document.getElementById('xii_marks').value ='';
+          document.getElementById('cutoff_marks').value ='';
+        }
+
+      });
+  });
+}

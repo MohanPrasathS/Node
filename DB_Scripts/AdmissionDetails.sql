@@ -1,4 +1,5 @@
 create table admissiondetails(
+	admission_no int unique,
 	Student_FN varchar(50),
 	Student_LN varchar(50),
 	Father_FN varchar(50),
@@ -6,8 +7,8 @@ create table admissiondetails(
 	Mother_FN varchar(50),
 	Mother_LN varchar(50),
 	Email varchar(40),
-	Stu_Mobile varchar(10),
-	DOB date,
+	Stu_Mobile varchar(10) primary key,
+	DOB varchar(15),
 	Address varchar(100),
 	City varchar(20),
 	State varchar(20),

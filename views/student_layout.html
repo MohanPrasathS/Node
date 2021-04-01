@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>SIET-GMS</title>
+        <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/cust.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+
+            <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars fa-lg" style="color: white;"></i></button>
+            <a href="dashboard.html"><i class="fas fa-home fa-2x"></i></a>
+            <div class="mx-auto row">
+                <img src="./images/Logo2.jpg" alt="" height="55px" width="auto">
+                <!-- <p class="heading" style="color: white; font-size: 20px; margin-top: 15px;"> <i>  Gate Management System</i> </p> -->
+            </div>
+
+            <div class="right-float" style="float: right">
+              <ul class="navbar-nav ml-auto ml-md-0">
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                          <a class="dropdown-item" href="#">Settings</a>
+                          <a class="dropdown-item" href="#">Activity Log</a>
+                      </div>
+                  </li>
+                  <button type="button" class="btn btn-default" style="color:white" onclick="confirm_logout()">
+                    <i class="fas fa-power-off"></i>
+                  </button>
+              </ul>
+            </div>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <!-- <div class="sb-sidenav-menu-heading" style="color: white">Admission</div>
+                            <a class="nav-link" href="javascript:void(0)" onclick="changePageContent('/admission')">
+                                <div class="sb-nav-link-icon"><i class="far fa-file-alt fa-2x"></i></div>
+                                Admission Enquiry
+                            </a> -->
+                            <div class="sb-sidenav-menu-heading" style="color: white">Students</div>
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-running fa-2x"></i></div>
+                                Late Comers
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="javascript:void(0)" onclick="changePageContent('/MorningLateComers')">Early Morning</a>
+                                    <a class="nav-link" href="javascript:void(0)" onclick="changePageContent('/LunchLateComers')">After Lunch</a>
+                                </nav>
+                            </div>
+
+                            <a class="nav-link" href="javascript:void(0)" onclick="changePageContent('/bunkers')">
+                                <div class="sb-nav-link-icon"><i class="fas fa-exclamation-triangle fa-2x"></i></i></div>
+                                Bunkers
+                            </a>
+                            <!-- <div class="sb-sidenav-menu-heading" style="color: white">Visitors</div>
+                            <a class="nav-link" href="javascript:void(0)" onclick="changePageContent('/visitors')">
+                                <div class="sb-nav-link-icon"><i class="far fa-id-badge fa-2x"></i></div>
+                                Visitors
+                            </a> -->
+
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        <div class="Username">Admin</div>
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                  <div class="container-fluid" id="container-fluid">
+                      <h1 class="mt-4">Monitor Entries and Exits</h1>
+                      <button class="btn btn-primary" type="button" name="button" onclick="Select()">Refresh</button>
+                      <button class="btn btn-primary" type="button" name="button" onclick="generatePDF()"><i class="fas fa-print"></i>Print</button>
+                      <br>
+                      <div id="content">
+
+                      </div>
+                  </div>
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; SIET 2021</div>
+                            <div>
+                                <a class="nav-link" href="javascript:void(0)" onclick="changePageContent('/privacy')">Privacy Policy</a>
+                                <!-- &middot;
+                                <a href="#">Terms &amp; Conditions</a> -->
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script type="text/javascript">
+          Select();
+        </script>
+    </body>
+</html>

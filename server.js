@@ -16,20 +16,20 @@ app.listen(port, () => {
 });
 
 
-const conn = process.env.DATABASE_URL;
-console.log(conn);
-const pool = new Pool({
-  connectionString: conn,
-  ssl: { rejectUnauthorized: false }
-});
-
+// const conn = process.env.DATABASE_URL;
+// console.log(conn);
 // const pool = new Pool({
-//     host: 'localhost',
-//     user: 'postgres',
-//     database: 'test',
-//     password: 'password',
-//     port: 5432,
+//   connectionString: conn,
+//   ssl: { rejectUnauthorized: false }
 // });
+
+const pool = new Pool({
+    host: 'localhost',
+    user: 'postgres',
+    database: 'test',
+    password: 'password',
+    port: 5432,
+});
 
 app.use(express.static("views/"));
 
@@ -58,8 +58,15 @@ app.post('/verifyEmail', (req,res) => {
     var otp = generateOTP();
     console.log(otp);
     var {name, email, phone, password} = req.body;
-    const insertUser = 'INSERT INTO signin values($1,$2,$3,$4,$5,$6);';
-    pool.query(insertUser,[email, name, phone, password, otp, 'false']);
+    var user_type = 'normal_user';
+    // var super_user = ["admin@siet.ac.in", "principle@siet.ac.in", "admissions@siet.ac.in"];
+    // if (super_user.includes(email) ){
+    //   user_type = 'super_user';
+    // } else {
+    //   user_type = 'normal_user';
+    // }
+    const insertUser = 'INSERT INTO signin values($1, $2, $3, $4, $5, $6, $7);';
+    pool.query(insertUser,[email, name, phone, password, otp, 'false', user_type]);
     SendOTP(req.body.email, otp);
     res.write('Otp Sent to the given mailId');
     res.end();
@@ -99,8 +106,33 @@ app.get('/privacy', (req, res) => {
       res.sendFile('views/privacy.html', {root:__dirname});
 });
 
+app.post('/enquiry_number', async (req, res) => {
+      console.log('got Admission Form page request');
+      console.log(req.body);
+      const select_admission_id = 'SELECT * from admissiondetails where stu_mobile = $1;';
+      try {
+        await pool.query(select_admission_id,[req.body.phone_no])
+          .then((result) => {
+            console.log(result);
+            if(result.rowCount) {
+              res.send(result.rows);
+              res.end;
+              // res.sendFile('views/admissionForm.html', {root:__dirname});
+            }
+            else{
+              res.sendFile('views/admissionForm.html', {root:__dirname});
+            }
+
+          });
+        } catch (e) {
+          console.log(e);
+        }
+
+      // res.sendFile('views/admissionForm.html', {root:__dirname});
+});
+
 app.get('/admission', (req, res) => {
-      console.log('got admission page request');
+      console.log('got admission enquiry page request');
       res.sendFile('views/admissionForm.html', {root:__dirname});
 });
 
@@ -130,6 +162,7 @@ app.post('/index',async (req,res) => {
     console.log(username + " " + password);
     const fetch_query = "select * from signin where username = $1";
     var signin = false;
+    var user_type = '';
     await pool.query(fetch_query,[username])
         .then((res) => {
             if(res.rowCount){
@@ -139,6 +172,7 @@ app.post('/index',async (req,res) => {
                 console.log(user +" "+ pass);
                 if(username === user && password === pass && verified == true){
                     signin = true;
+                    user_type = res.rows[0].user_type;
                 }
             }
         })
@@ -147,7 +181,11 @@ app.post('/index',async (req,res) => {
           console.log(err);
         });
         if(signin){
-            res.sendFile(path.resolve('views/dashboard.html'));
+            if(user_type === 'super_user'){
+              res.sendFile(path.resolve('views/dashboard.html'));
+            } else {
+              res.sendFile(path.resolve('views/student_layout.html'));
+            }
             console.log('Successfully Logged  In!');
             alert("Successfully Logged In!");
         } else{
@@ -227,16 +265,27 @@ app.post('/insertAdmission', async (req, res) => {
     let rollNo, visitor_no, reason_for_visiting;
     const insert_entries_query = "INSERT into entries VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9);";
     const insert_admission_query = "INSERT into admissionTable (admission_no, first_name, phone_no, time_in, on_date) VALUES($1, $2, $3, $4, $5);" ;
+    const admission_details = "INSERT INTO admissiondetails (admission_no, student_fn, stu_mobile) VALUES($1, $2, $3);";
     try {
       var result = await pool.query('select max(admission_no) from admissionTable');
       var admission_no = result.rows[0].max;
       admission_no += 1;
-        pool.query(insert_entries_query, [rollNo,status, at_time, on_date, visitor_no, phone_no, reason_for_visiting, admission_no, first_name]);
-        pool.query(insert_admission_query, [admission_no, first_name, phone_no, at_time, on_date]);
-        console.log("Insert admission Successfully");
-        res.status(200);
-        res.setHeader('Content-Type', 'text/plain');
-        res.end(admission_no.toString());
+      const check_result = await pool.query('Select * from admissionTable where phone_no = $1;',[phone_no])
+        if(check_result.rowCount) {
+          await pool.query('update admissionTable set time_in = $1, on_date = $2 where phone_no = $3;',[at_time, on_date, phone_no]);
+          console.log("update date and time of admission enquiry Successfully");
+          res.status(200);
+          res.setHeader('Content-Type', 'text/plain');
+          res.end(check_result.admission_no.toString());
+        } else {
+          pool.query(insert_entries_query, [rollNo,status, at_time, on_date, visitor_no, phone_no, reason_for_visiting, admission_no, first_name]);
+          pool.query(insert_admission_query, [admission_no, first_name, phone_no, at_time, on_date]);
+          pool.query(admission_details,[admission_no,first_name, phone_no]);
+          console.log("Insert admission Successfully");
+          res.status(200);
+          res.setHeader('Content-Type', 'text/plain');
+          res.end(admission_no.toString());
+        }
     } catch (e) {
         console.log(e);
     }
@@ -256,20 +305,27 @@ app.post('/insertAdmission', async (req, res) => {
   }
 });
 
-app.post('/insertAdmissionDetails', (req, res) => {
+app.post('/insertAdmissionDetails', async (req, res) => {
   console.log(req.body);
-  const insertAdmissionDetails = 'INSERT INTO admissiondetails values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22);';
-  // const { student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name, email, student mobile number, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2, course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios } = req.body;
-  // const student_first_name = req.body.student_first_name;
-  // const student_last_name = req.body.student_last_name;
-  // const father_first_name = req.body.father_first_name;
-  // const father_last_name = req.body.father_last_name;
-  // const mother_first_name = req.body.mother_first_name;
-  // const mother_last_name = req.body.mother_last_name;
-  const {student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name} = req.body;
-  const {email, student_mobile_number, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2} = req.body;
-  const {course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios} = req.body;
-  pool.query(insertAdmissionDetails,[student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name, email, student_mobile_number, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2, course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios])
+  // const checkAdmission = 'select * from admissiondetails where stu_mobile = $1;';
+  const result = await pool.query(checkAdmission,[req.body.phone_no]);
+  if (result.rowCount) {
+    const update_admission_details = 'update admissiondetails set student_fn = $1, student_ln = $2, father_fn = $3, father_ln = $4, mother_fn = $5, mother_ln = $6, email = $7, dob = $8, address = $9, city = $10, state = $11, zip = $12, parent_mob_1 = $13, parent_mob_2 = $14, course_1 = $15, course_2 = $16, school = $17, x_marks = $18, xii_marks = $19, cut_off = $20, Hostel_DayScholor = $21;'
+    pool.query(update_admission_details, [student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name, email, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2, course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios]);
+  } else{
+    var admission_result = await pool.query('select max(admission_no) from admissiondetails');
+    var admission_no = admission_result.rows[0].max;
+    admission_no += 1;
+    const insert_missed_admission = 'INSERT into admissionTable (admission_no, first_name, phone_no, time_in, on_date) VALUES($1, $2, $3, $4, $5);';
+    const insertAdmissionDetails = 'INSERT INTO admissiondetails values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23);';
+    const {student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name} = req.body;
+    const {email, student_mobile_number, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2} = req.body;
+    const {course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios} = req.body;
+    // var at_time = new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' , hour12: true });
+    // var on_date = Date().format(DateTimeFormats.commonLogFormat).substring(0,11);
+    // pool.quey(insert_missed_admission,[admission_no, student_first_name, student_mobile_number, at_time, on_date ]);
+    pool.query(insertAdmissionDetails,[admission_no, student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name, email, student_mobile_number, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2, course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios])
+  }
   res.sendFile(path.resolve('views/dashboard.html'));
   // res.sendStatus(200);
 });
