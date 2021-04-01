@@ -16,20 +16,20 @@ app.listen(port, () => {
 });
 
 
-// const conn = process.env.DATABASE_URL;
-// console.log(conn);
-// const pool = new Pool({
-//   connectionString: conn,
-//   ssl: { rejectUnauthorized: false }
-// });
-
+const conn = process.env.DATABASE_URL;
+console.log(conn);
 const pool = new Pool({
-    host: 'localhost',
-    user: 'postgres',
-    database: 'test',
-    password: 'password',
-    port: 5432,
+  connectionString: conn,
+  ssl: { rejectUnauthorized: false }
 });
+
+// const pool = new Pool({
+//     host: 'localhost',
+//     user: 'postgres',
+//     database: 'test',
+//     password: 'password',
+//     port: 5432,
+// });
 
 app.use(express.static("views/"));
 
