@@ -308,19 +308,21 @@ app.post('/insertAdmission', async (req, res) => {
 app.post('/insertAdmissionDetails', async (req, res) => {
   console.log(req.body);
   const checkAdmission = 'select * from admissiondetails where stu_mobile = $1;';
-  const result = await pool.query(checkAdmission,[req.body.phone_no]);
+  const result = await pool.query(checkAdmission,[req.body.student_mobile_number]);
+  const {student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name} = req.body;
+  const {email, student_mobile_number, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2} = req.body;
+  const {course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios} = req.body;
   if (result.rowCount) {
+    console.log('update Details');
     const update_admission_details = 'update admissiondetails set student_fn = $1, student_ln = $2, father_fn = $3, father_ln = $4, mother_fn = $5, mother_ln = $6, email = $7, dob = $8, address = $9, city = $10, state = $11, zip = $12, parent_mob_1 = $13, parent_mob_2 = $14, course_1 = $15, course_2 = $16, school = $17, x_marks = $18, xii_marks = $19, cut_off = $20, Hostel_DayScholor = $21;'
     pool.query(update_admission_details, [student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name, email, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2, course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios]);
   } else{
+    console.log('Insert new');
     var admission_result = await pool.query('select max(admission_no) from admissiondetails');
     var admission_no = admission_result.rows[0].max;
     admission_no += 1;
     const insert_missed_admission = 'INSERT into admissionTable (admission_no, first_name, phone_no, time_in, on_date) VALUES($1, $2, $3, $4, $5);';
     const insertAdmissionDetails = 'INSERT INTO admissiondetails values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23);';
-    const {student_first_name, student_last_name, father_first_name, father_last_name, mother_first_name, mother_last_name} = req.body;
-    const {email, student_mobile_number, dob, address, city, state, zip, parent_mobile_number_1, parent_mobile_number_2} = req.body;
-    const {course_1, course_2, school, x_marks, xii_marks, cutoff_marks, exampleRadios} = req.body;
     // var at_time = new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' , hour12: true });
     // var on_date = Date().format(DateTimeFormats.commonLogFormat).substring(0,11);
     // pool.quey(insert_missed_admission,[admission_no, student_first_name, student_mobile_number, at_time, on_date ]);
